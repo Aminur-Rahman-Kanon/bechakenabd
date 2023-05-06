@@ -42,6 +42,11 @@ const homeAndLivingModel = mongoose.model('home-and-living', products);
 const electronicsModel = mongoose.model('electronics', products);
 const healthAndBeautyModel = mongoose.model('health-and-beauty', products);
 const fashionModel = mongoose.model('fashion', products);
+const featuredModel = mongoose.model('featured', products);
+const trendingModel = mongoose.model('trending', products);
+const exclusiveModel = mongoose.model('exclusive', products);
+const topSellerModel = mongoose.model('topSeller', products);
+const latestModel = mongoose.model('latest', products);
 
 module.exports = {
     registerModel,
@@ -52,5 +57,10 @@ module.exports = {
     homeAndLivingModel,
     electronicsModel,
     healthAndBeautyModel,
-    fashionModel
+    fashionModel,
+    featuredModel,
+    trendingModel,
+    exclusiveModel,
+    topSellerModel,
+    latestModel
 }

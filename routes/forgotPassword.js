@@ -14,14 +14,14 @@ router.post('/', async (req, res) => {
         expiresIn: process.env.JWT_EXPIRES_IN
     });
 
-    const link = `https://karkhana-server.onrender.com/reset-password/${userCheck._id}/${token}`;
+    const link = `http://localhost:8000/reset-password/${userCheck._id}/${token}`;
 
     try {
         const transporter = nodeMailer.createTransport({
             service: 'gmail',
             auth: {
-              user: 'karkhanawebservice@gmail.com',
-              pass: 'ivlqywmzjmhbjzeo'
+              user: 'bechakenaservice@gmail.com',
+              pass: 'obaiwrkljcmrewxi'
             }
         });
         

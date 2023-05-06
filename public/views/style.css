@@ -20,12 +20,10 @@ html, body {
     width: 150px;
     height: 150px;
     margin: 30px auto;
-    border-radius: 50%;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #d0b09b;
 }
 
 .logo {

@@ -8,6 +8,10 @@ const homeAndLiving = require('../Schemas/schema').homeAndLivingModel;
 const electronics = require('../Schemas/schema').electronicsModel;
 const healthAndBeauty = require('../Schemas/schema').healthAndBeautyModel;
 const fashion = require('../Schemas/schema').fashionModel;
+const featured = require('../Schemas/schema').featuredModel;
+const trending = require('../Schemas/schema').trendingModel;
+const exclusive = require('../Schemas/schema').exclusiveModel;
+const topSeller = require("../Schemas/schema").topSellerModel;
 const multer = require('multer');
 const firebase = require('firebase/app');
 const { getStorage, ref, getDownloadURL, uploadBytesResumable } = require('firebase/storage');
@@ -23,6 +27,8 @@ router.post('/', upload.array('photo'), async (req, res) => {
     const data = await JSON.parse(req.body.data);
     const productCategory = data.category.toLowerCase();
     const productName = data.name.toLowerCase();
+    console.log(productCategory);
+    console.log(data);
     
     switch (productCategory) {
         case "space saver":
@@ -80,7 +86,7 @@ router.post('/', upload.array('photo'), async (req, res) => {
 
         case "fashion wallet":
             //checking if product exist
-            const fashionWalletItem = await comboModel.find({ name: data.name });
+            const fashionWalletItem = await fashionWallet.find({ name: data.name });
             if (fashionWalletItem.length) return res.json({ status: 'product exist' ,  product: fashionWalletItem });
 
             if (!req.files.length) return res.json({ status: 'no img found' });
@@ -109,7 +115,7 @@ router.post('/', upload.array('photo'), async (req, res) => {
 
         case "smart watch":
             //checking if product exist
-            const smartWatchItem = await earRingModel.find({ name: data.name });
+            const smartWatchItem = await smartWatch.find({ name: data.name });
             if (smartWatchItem.length) return res.json({ status: 'product exist' ,  product: smartWatchItem });
 
             const smartWatchImg = [];
@@ -135,7 +141,7 @@ router.post('/', upload.array('photo'), async (req, res) => {
 
         case "home and living":
             //checking if product exist
-            const homeAndLivingItem = await exclusiveModel.find({ name: data.name });
+            const homeAndLivingItem = await homeAndLiving.find({ name: data.name });
             if (homeAndLivingItem.length) return res.json({ status: 'product exist' ,  product: homeAndLivingItem });
 
             const homeAndLivingImg = [];
@@ -162,7 +168,7 @@ router.post('/', upload.array('photo'), async (req, res) => {
 
         case "electronics":
             //checking if product exist
-            const electronicsItem = await fingerRingModel.find({ name: data.name });
+            const electronicsItem = await electronics.find({ name: data.name });
             if (electronicsItem.length) return res.json({ status: 'product exist' ,  product: electronicsItem });
 
             const electronicsImg = [];
@@ -188,7 +194,7 @@ router.post('/', upload.array('photo'), async (req, res) => {
 
         case "health and beauty":
             //checking if product exist
-            const healthAndBeautyItem = await latestModel.find({ name: data.name });
+            const healthAndBeautyItem = await healthAndBeauty.find({ name: data.name });
             if (healthAndBeautyItem.length) return res.json({ status: 'product exist' ,  product: healthAndBeautyItem });
 
             const healthAndBeautyImg = [];
@@ -215,7 +221,7 @@ router.post('/', upload.array('photo'), async (req, res) => {
 
         case "fashion":
             //checking if product exist
-            const fashionItem = await necklaceModel.find({ name: data.name });
+            const fashionItem = await fashion.find({ name: data.name });
             if (fashionItem.length) return res.json({ status: 'product exist' ,  product: fashionItem });
 
             const fashionImg = [];
@@ -238,6 +244,114 @@ router.post('/', upload.array('photo'), async (req, res) => {
             data['img'] = fashionImg;
 
             await fashion.create(data).then(result => res.json({ status: 'success' })).catch(err => res.json({ status: 'failed' }));
+            break;
+        
+        case "featured":
+            //checking if product exist
+            const featuredItem = await featured.find({ name: data.name });
+            if (featuredItem.length) return res.json({ status: 'product exist' ,  product: featuredItem });
+
+            const featuredImg = [];
+            //create directory
+            for(let i=0; i<req.files.length; i++) {
+                const storageRef = ref(storage, `products/${productCategory}/${productName}/${productName}${i+1}`);
+        
+                const metaData = {
+                    contentType: req.files[i].mimetype
+                }
+        
+                const snapshot = await uploadBytesResumable(storageRef, req.files[i].buffer, metaData);
+        
+                await getDownloadURL(snapshot.ref).then(url => featuredImg.push(url)).catch(err => console.log(err));
+            }
+        
+            //push database
+            data['rating'] = 0;
+            data['impression'] = 0;
+            data['img'] = featuredImg;
+
+            await featured.create(data).then(result => res.json({ status: 'success' })).catch(err => res.json({ status: 'failed' }));
+            break;
+
+        case "trending":
+            //checking if product exist
+            const trendingItem = await trending.find({ name: data.name });
+            if (trendingItem.length) return res.json({ status: 'product exist' ,  product: trendingItem });
+
+            const trendingImg = [];
+            //create directory
+            for(let i=0; i<req.files.length; i++) {
+                const storageRef = ref(storage, `products/${productCategory}/${productName}/${productName}${i+1}`);
+        
+                const metaData = {
+                    contentType: req.files[i].mimetype
+                }
+        
+                const snapshot = await uploadBytesResumable(storageRef, req.files[i].buffer, metaData);
+        
+                await getDownloadURL(snapshot.ref).then(url => trendingImg.push(url)).catch(err => console.log(err));
+            }
+        
+            //push database
+            data['rating'] = 0;
+            data['impression'] = 0;
+            data['img'] = trendingImg;
+
+            await trending.create(data).then(result => res.json({ status: 'success' })).catch(err => res.json({ status: 'failed' }));
+            break;
+
+        case "exclusive":
+            //checking if product exist
+            const exclusiveItem = await exclusive.find({ name: data.name });
+            if (exclusiveItem.length) return res.json({ status: 'product exist' ,  product: exclusiveItem });
+
+            const exclusiveImg = [];
+            //create directory
+            for(let i=0; i<req.files.length; i++) {
+                const storageRef = ref(storage, `products/${productCategory}/${productName}/${productName}${i+1}`);
+        
+                const metaData = {
+                    contentType: req.files[i].mimetype
+                }
+        
+                const snapshot = await uploadBytesResumable(storageRef, req.files[i].buffer, metaData);
+        
+                await getDownloadURL(snapshot.ref).then(url => exclusiveImg.push(url)).catch(err => console.log(err));
+            }
+        
+            //push database
+            data['rating'] = 0;
+            data['impression'] = 0;
+            data['img'] = exclusiveImg;
+
+            await exclusive.create(data).then(result => res.json({ status: 'success' })).catch(err => res.json({ status: 'failed' }));
+            break;
+
+        case "top seller":
+            //checking if product exist
+            const topSellerItem = await topSeller.find({ name: data.name });
+            if (topSellerItem.length) return res.json({ status: 'product exist' ,  product: topSellerItem });
+
+            const topSellerImg = [];
+            //create directory
+            for(let i=0; i<req.files.length; i++) {
+                const storageRef = ref(storage, `products/${productCategory}/${productName}/${productName}${i+1}`);
+        
+                const metaData = {
+                    contentType: req.files[i].mimetype
+                }
+        
+                const snapshot = await uploadBytesResumable(storageRef, req.files[i].buffer, metaData);
+        
+                await getDownloadURL(snapshot.ref).then(url => topSellerImg.push(url)).catch(err => console.log(err));
+            }
+        
+            //push database
+            data['rating'] = 0;
+            data['impression'] = 0;
+            data['img'] = topSellerImg;
+
+            await topSeller.create(data).then(result => res.json({ status: 'success' })).catch(err => res.json({ status: 'failed' }));
             break;
 
         default:
