@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const blogModels = require('../Schemas/schema').blogModel;
+const blogModel = require('../Schemas/schema').blogModel;
 const firebase = require('firebase/app');
 const firebaseConfig = require('../firebase_config/firebaseConfig');
 const { getStorage, ref, uploadBytesResumable, getDownloadURL } = require('firebase/storage');
@@ -11,39 +11,44 @@ const storage = getStorage();
 
 const upload = multer(multer.memoryStorage());
 
-router.post('/', upload.single('photo'), async (req, res) => {
+router.post('/', upload.array('photo'), async (req, res) => {
     const { data } = await req.body;
     const extractedData = await JSON.parse(data);
 
+    const checkBlog = await blogModel.find({ _id: extractedData.id});
+    if (!checkBlog) return res.json({ status: 'not found' });
+
     // if photo uploaded
-    if (req.file){
-        const photo = req.file.buffer;
-        const imgRef = ref(storage, `/products/blog/blog${extractedData.productIndex}.jpg`);
-    
-        const metaData = {
-            contentType: req.file.mimetype
+    const blogImg = [];
+    if (req.files.length){
+        for (let idx=0; idx<req.files.length; idx++){
+            const imgRef = ref(storage, `products/blog/${extractedData.title}${idx+1}.jpg`);
+            
+            const metaData = {
+                contentType: req.files[idx].mimetype
+            }
+        
+            const snapshot = await uploadBytesResumable(imgRef, req.files[idx].buffer, metaData);
+            const url = await getDownloadURL(snapshot.ref);
+            blogImg.push(url);
         }
     
-        const snapshot = await uploadBytesResumable(imgRef, req.file.buffer, metaData);
-        const url = await getDownloadURL(snapshot.ref);
     
-        blogModels.updateOne({
-            title: extractedData.index
+        await blogModel.updateOne({
+            _id: extractedData.id
         }, {
             $set: {
                 title: extractedData.title,
                 date: extractedData.date,
                 details: extractedData.details,
-                img: url
+                img: blogImg
             }
         }).then(result => res.json({ status: 'success' })).catch(err => res.json({ status: 'failed' }));
     }
     //no photo uploaded
     else {
-        console.log(extractedData.index);
-        console.log(extractedData);
-        blogModels.updateOne({
-            _id: extractedData.index
+        blogModel.updateOne({
+            _id: extractedData.id
         }, {
             $set: {
                 title: extractedData.title,

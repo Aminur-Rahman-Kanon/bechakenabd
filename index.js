@@ -18,13 +18,13 @@ const productsRoute = require('./routes/products');
 const forgotPassword = require('./routes/forgotPassword');
 const resetPassword = require('./routes/resetPassword');
 const confirmResetPassword = require('./routes/confirmResetPassword');
-// const getBlog = require('./routes/blog');
 const updateProfile = require('./routes/updateProfile');
 const updateRedirect = require('./routes/updateRedirect');
 const addProducts = require('./routes/addProducts');
 const deleteProducts = require('./routes/deleteProduct');
 const updateBlog = require('./routes/updateBlog');
 const updateProduct = require('./routes/updateProducts');
+const addBlogProduct = require('./routes/addBlogRoute');
 
 //routes
 app.use('/login', loginRoute);
@@ -33,13 +33,13 @@ app.use('/products/:productId', productsRoute);
 app.use('/forgot-password', forgotPassword);
 app.use('/reset-password/:id/:token', resetPassword);
 app.use('/reset-password/:id/:token', confirmResetPassword);
-// app.use('/get-blogs', getBlog);
 app.use('/update-profile', updateProfile);
 app.use('/redirect-user', updateRedirect);
 app.use('/add-products', addProducts);
 app.use('/delete-products', deleteProducts);
 app.use('/update-blog', updateBlog);
 app.use('/update-product', updateProduct);
+app.use('/add-blog', addBlogProduct);
 
 app.use(express.static('public'));
 

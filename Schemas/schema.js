@@ -27,7 +27,7 @@ const products = {
 
 const blog = {
     category: String,
-    img: String,
+    img: Array,
     title: String,
     date: String,
     details: String,
@@ -47,6 +47,7 @@ const trendingModel = mongoose.model('trending', products);
 const exclusiveModel = mongoose.model('exclusive', products);
 const topSellerModel = mongoose.model('topSeller', products);
 const latestModel = mongoose.model('latest', products);
+const blogModel = mongoose.model('blog', blog);
 
 module.exports = {
     registerModel,
@@ -62,5 +63,6 @@ module.exports = {
     trendingModel,
     exclusiveModel,
     topSellerModel,
-    latestModel
+    latestModel,
+    blogModel
 }

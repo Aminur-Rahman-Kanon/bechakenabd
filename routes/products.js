@@ -17,6 +17,7 @@ const trending = require('../Schemas/schema').trendingModel;
 const exclusive = require('../Schemas/schema').exclusiveModel;
 const topSeller = require("../Schemas/schema").topSellerModel;
 const latest = require('../Schemas/schema').latestModel;
+const blog = require('../Schemas/schema').blogModel;
 
 
 router.get('/', async (req, res) => {
@@ -40,9 +41,10 @@ router.get('/', async (req, res) => {
                 const exclusiveItem = await exclusive.find({});
                 const topSellerItem = await topSeller.find({});
                 const latestItem = await latest.find({});
+                const blogItem = await blog.find({});
 
                 const product = { spaceSaverItem, bluetoothHeadphoneItem, fashionWalletItem, smartWatchItem, homeAndLivingItem,
-                electronicsItem, healthAndBeautyItem, fashionItem, featuredItem, trendingItem, topSellerItem, exclusiveItem, latestItem };
+                electronicsItem, healthAndBeautyItem, fashionItem, featuredItem, trendingItem, topSellerItem, exclusiveItem, latestItem, blogItem };
 
                 return res.json({ status: 'success', data: product });
 

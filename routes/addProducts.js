@@ -13,6 +13,7 @@ const trending = require('../Schemas/schema').trendingModel;
 const exclusive = require('../Schemas/schema').exclusiveModel;
 const topSeller = require("../Schemas/schema").topSellerModel;
 const latest = require('../Schemas/schema').latestModel;
+const blog = require('../Schemas/schema').blogModel;
 const multer = require('multer');
 const firebase = require('firebase/app');
 const { getStorage, ref, getDownloadURL, uploadBytesResumable } = require('firebase/storage');
@@ -379,7 +380,7 @@ router.post('/', upload.array('photo'), async (req, res) => {
 
             await latest.create(data).then(result => res.json({ status: 'success' })).catch(err => res.json({ status: 'failed' }));
             break;
-
+            
         default:
             return res.json({ status: 'invalid request' })
     }
